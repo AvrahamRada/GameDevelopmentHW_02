@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class CameraMotion : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class CameraMotion : MonoBehaviour
     private float _angularSpeed = 1f;
     private float _rotationAngle;
     private CharacterController _characterController;
+    private float _minX, _minZ, _maxX, _maxZ;
 
     // Start is called before the first frame update
     void Start()
@@ -16,6 +18,12 @@ public class CameraMotion : MonoBehaviour
         _speed = 1f;
         _rotationAngle = 0f;
         _characterController = GetComponent<CharacterController>();
+
+        _minX = Terrain.activeTerrain.terrainData.bounds.min.x;
+        _minZ = Terrain.activeTerrain.terrainData.bounds.min.z;
+
+        _maxX = Terrain.activeTerrain.terrainData.bounds.min.x + Terrain.activeTerrain.terrainData.size.x;
+        _maxZ = Terrain.activeTerrain.terrainData.bounds.min.z + Terrain.activeTerrain.terrainData.size.z;
     }
 
     // Update is called once per frame
@@ -37,10 +45,21 @@ public class CameraMotion : MonoBehaviour
         transform.Rotate(0, _rotationAngle, 0);
 
         // Translate is one of transformations that uses Vector3
-        // transform.Translate(Vector3.forward * Time.deltaTime * _speed);
+        Vector3 point = Vector3.forward * Time.deltaTime * _speed;
+        if(transform.position.x <= _minX || transform.position.x >= _maxX ||
+            transform.position.z <= _minZ || transform.position.z >= _maxZ)
+        {
+            point.y = 0; 
+        }
+        else // Update haignt to terrain haight in point (position.x, position.z)
+        {
+            Vector3 pos = new Vector3(transform.position.x, 0, transform.position.z);
+            point.y += Terrain.activeTerrain.SampleHeight(pos) - transform.position.y;
+        }
+        transform.Translate(point);
 
         // We shall use CharacterController to move and to stop if camera collides with another object
         Vector3 direction = transform.TransformDirection(Vector3.forward * Time.deltaTime * _speed);
-        _characterController.Move(direction);
+        // _characterController.Move(direction);
     }
 }
