@@ -36,9 +36,9 @@ public class CameraMotion : MonoBehaviour
         //transform.Translate(transform.forward * Time.deltaTime * _speed);
 
         if (Input.GetKey(KeyCode.W))
-            _speed += 0.001f;
+            _speed += 0.05f;
         else if (Input.GetKey(KeyCode.S))
-            _speed -= 0.01f;
+            _speed -= 0.05f;
 
         // Sets sight direction by means of tra
         _rotationAngle += mouse_x * _angularSpeed * Time.deltaTime;
@@ -54,7 +54,7 @@ public class CameraMotion : MonoBehaviour
         else // Update haignt to terrain haight in point (position.x, position.z)
         {
             Vector3 pos = new Vector3(transform.position.x, 0, transform.position.z);
-            point.y += Terrain.activeTerrain.SampleHeight(pos) - transform.position.y;
+            point.y = 1.6f + Terrain.activeTerrain.SampleHeight(pos) - transform.position.y; // delta in Y direction
         }
         transform.Translate(point);
 
