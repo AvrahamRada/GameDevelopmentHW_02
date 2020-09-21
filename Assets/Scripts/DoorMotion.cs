@@ -23,7 +23,7 @@ public class DoorMotion : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("MainCamera"))
+        if (other.gameObject.tag == "MainCamera")
         {
             animator.SetTrigger("Open");
             isOpen = true;

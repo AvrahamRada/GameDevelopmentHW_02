@@ -15,13 +15,12 @@ public class CameraMotion : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _speed = 1f;
+        _speed = 0f;
         _rotationAngle = 0f;
         _characterController = GetComponent<CharacterController>();
 
         _minX = Terrain.activeTerrain.terrainData.bounds.min.x;
         _minZ = Terrain.activeTerrain.terrainData.bounds.min.z;
-
         _maxX = Terrain.activeTerrain.terrainData.bounds.min.x + Terrain.activeTerrain.terrainData.size.x;
         _maxZ = Terrain.activeTerrain.terrainData.bounds.min.z + Terrain.activeTerrain.terrainData.size.z;
     }
@@ -40,7 +39,7 @@ public class CameraMotion : MonoBehaviour
         else if (Input.GetKey(KeyCode.S))
             _speed -= 0.05f;
 
-        // Sets sight direction by means of tra
+        // Sets sight direction by means of transform.Rotate
         _rotationAngle += mouse_x * _angularSpeed * Time.deltaTime;
         transform.Rotate(0, _rotationAngle, 0);
 
@@ -56,10 +55,10 @@ public class CameraMotion : MonoBehaviour
             Vector3 pos = new Vector3(transform.position.x, 0, transform.position.z);
             point.y = 1.6f + Terrain.activeTerrain.SampleHeight(pos) - transform.position.y; // delta in Y direction
         }
-        transform.Translate(point);
+        //transform.Translate(point);
 
         // We shall use CharacterController to move and to stop if camera collides with another object
         Vector3 direction = transform.TransformDirection(Vector3.forward * Time.deltaTime * _speed);
-        // _characterController.Move(direction);
+        _characterController.Move(direction);
     }
 }
